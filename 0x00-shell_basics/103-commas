@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -A1 | sort -V | awk '{ORS=NR==1?"":NR%2?",":"/\n"}1' | sed '1s/^/., ../'
+ls -1 | sort -V | awk '{ORS=NR==1?"":NR%2?",":"/\n"}1' | sed '1s/^/., ../'
