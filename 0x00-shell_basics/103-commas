@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -1p | sort -V | awk 'BEGIN{ORS=","} {if(NR==1) print "./, ../"; else if($0 ~ /\/$/) print $0; else print $0","} END{print ""}'
+ls -pamv
