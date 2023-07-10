@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type f -exec stat --format="%Y %n" {} + | sort -rn | head -n 10 | awk '{print $2}'
+ls -t1 | head
