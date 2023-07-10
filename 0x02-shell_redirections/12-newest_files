@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -lt | grep '^-' | awk '{print $9}' | head -n 10
+find . -type f -exec stat --format="%Y %n" {} + | sort -rn | head -n 10 | awk '{print $2}'
