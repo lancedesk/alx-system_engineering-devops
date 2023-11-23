@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# This script displays numbers and messages based on certain iterations
+
+index=1
+
+while [ $index -le 20 ]; do
+  case $index in
+    4)
+      echo $index
+      echo "bad luck from China"
+      ;;
+    9)
+      echo $index
+      echo "bad luck from Japan"
+      ;;
+    17)
+      echo $index
+      echo "bad luck from Italy"
+      ;;
+    *)
+      echo $index
+      ;;
+  esac
+  ((index++))
+done
