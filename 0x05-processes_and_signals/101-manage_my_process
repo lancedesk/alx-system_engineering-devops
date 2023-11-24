@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#Manage my process
 
 SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
 PID_FILE="/var/run/my_process.pid"
