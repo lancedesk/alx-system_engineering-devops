@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 
-PID_FILE="myscript"
-PID_DIR="/var/run"
+# Set the PID file path
+PID_FILE="/var/run/myscript.pid"
 
-MSG_INT () {
-	echo -e "Y U no love me?!"
+# Function to handle cleanup
+cleanup() {
+    echo "I hate the kill command"
+    rm -f "$PID_FILE"
+    exit 0
 }
 
-MSG_QUIT () {
-	rm -rf "${PID_DIR}/${PID_FILE}.pid"
-	echo -e "I hate the kill command"
-	exit 0
+# Function to handle SIGTERM signal
+sigterm_handler() {
+    echo "Y U no love me?!"
+    cleanup
 }
 
-trap "MSG_INT" SIGINT
-trap "MSG_QUIT" SIGTERM
-trap "MSG_QUIT" SIGQUIT
+# Trap signals
+trap 'sigterm_handler' SIGTERM
+trap 'cleanup' SIGQUIT SIGINT
 
+# Save PID to file
+echo $$ > "$PID_FILE"
 
-# Create the file
-echo $$ >> "${PID_DIR}/${PID_FILE}.pid"
-
+# Display message indefinitely
 while true; do
-	echo -e "To infinity and beyond"
-	sleep 2
+    echo "To infinity and beyond"
+    sleep 1
 done
