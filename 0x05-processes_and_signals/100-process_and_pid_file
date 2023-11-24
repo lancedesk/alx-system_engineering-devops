@@ -3,19 +3,19 @@
 PID_FILE="myscript"
 PID_DIR="/var/run"
 
-SIGINT_MESSAGE () {
+MSG_INT () {
 	echo -e "Y U no love me?!"
 }
 
-QUIT_MESSAGE () {
+MSG_QUIT () {
 	rm -rf "${PID_DIR}/${PID_FILE}.pid"
 	echo -e "I hate the kill command"
 	exit 0
 }
 
-trap "SIGINT_MESSAGE" SIGINT
-trap "QUIT_MESSAGE" SIGTERM
-trap "QUIT_MESSAGE" SIGQUIT
+trap "MSG_INT" SIGINT
+trap "MSG_QUIT" SIGTERM
+trap "MSG_QUIT" SIGQUIT
 
 
 # Create the file
