@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 PID_FILE="myscript"
-PID_DIRECTORY="/var/run"
+PID_DIR="/var/run"
 
 SIGINT_MESSAGE () {
 	echo -e "Y U no love me?!"
 }
 
 QUIT_MESSAGE () {
-	rm -rf "${PID_DIRECTORY}/${PID_FILE}.pid"
+	rm -rf "${PID_DIR}/${PID_FILE}.pid"
 	echo -e "I hate the kill command"
 	exit 0
 }
@@ -19,7 +19,7 @@ trap "QUIT_MESSAGE" SIGQUIT
 
 
 # Create the file
-echo $$ >> "${PID_DIRECTORY}/${PID_FILE}.pid"
+echo $$ >> "${PID_DIR}/${PID_FILE}.pid"
 
 while true; do
 	echo -e "To infinity and beyond"
