@@ -1,3 +1,4 @@
+#!/usr/bin/pup
 # Install flask from pip3 using Puppet
 
 package { 'flask':
