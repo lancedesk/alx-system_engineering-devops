@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # Uses SSH to connect to a server
-# using a private key located at $HOME/.ssh/school
+# using a private key located at ~/.ssh/school
 # for the ubuntu user
 ssh -i ~/.ssh/school ubuntu@54.158.207.27
