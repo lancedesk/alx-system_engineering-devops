@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Define variables
-private_key="~/.ssh/school"
+# Uses SSH to connect to a server
+# using a private key located at $HOME/.ssh/school
+# for the ubuntu user
+private_key="$HOME/.ssh/school"
 user="ubuntu"
 server_ip="54.158.207.27"
 # Use ssh with single-character flags
