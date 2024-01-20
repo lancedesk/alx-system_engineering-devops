@@ -1,0 +1,5 @@
+# SSH config file for local client at ~/.ssh/config
+
+Host 54.158.207.27
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
