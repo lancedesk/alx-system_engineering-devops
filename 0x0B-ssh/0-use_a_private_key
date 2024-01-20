@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Define variables
-private_key="~/.ssh/school"
+private_key="$HOME/.ssh/school"
 user="ubuntu"
 server_ip="54.158.207.27"
 
