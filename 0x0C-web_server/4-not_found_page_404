@@ -1,29 +1,26 @@
 #!/usr/bin/env bash
 # Nginx server config to have a custom 404 page.
 
+# Define the redirection location data
+redirect_location_data="\\\tlocation /redirect_me {\n\t\t return 301 https://google.com;\n\t}\n"
+not_found_location_data="error_page 404 /custom_404.html;\n\\tlocation = /custom_404.html {\n\t\t root /usr/share/nginx/html;\n\t\tinternal;\n\t}\n"
+pattern="#error_page 404 /404.html;"
+
 # Update package list and install Nginx
 sudo apt-get -y update
 sudo apt-get -y install nginx
+sudo service nginx start
 
 # Create a default HTML page
-default_page="/var/www/html/index.html"
+default_page="/usr/share/nginx/html/index.html"
 echo "Hello World!" | sudo tee "$default_page"
 
-# Nginx configuration file
-nginx_config="/etc/nginx/sites-available/default"
+sudo sed -i "30i $redirect_location_data" /etc/nginx/sites-available/default
 
-# Find the line number of the first 'location' directive in the default Nginx configuration
-location=$(grep -Fn location $nginx_config | head -1 | cut -d":" -f1)
-
-# Define the redirection location data
-redirect_location_data="\\\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}\n\n"
-not_found_location_data="\\\terror_page 404 /404.html;\n"
-
-echo "Ceci n'est pas une page" | sudo tee "/var/www/html/404.html"
+echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/custom_404.html
 
 # Insert the custom 404 location data into the Nginx configuration file
-sudo sed -i "${location}i ${redirect_location_data}" ${nginx_config}
-sudo sed -i "${location}i ${not_found_location_data}" ${nginx_config}
+sudo sed -i "s@$pattern@$not_found_location_data@" /etc/nginx/sites-available/default
 
 # Restart Nginx service to apply changes
-sudo service nginx start
+sudo service nginx restart
