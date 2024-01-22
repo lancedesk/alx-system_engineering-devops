@@ -9,9 +9,6 @@ sudo ufw allow 'Nginx HTTP'
 sudo chown -R "$USER":"$USER" /var/www/html
 sudo chmod -R 755 /var/www
 
-# code for error page and redirect error 404
-echo "Ceci n'est pas une page" > /var/www/html/404.html
-
 configuration="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 sudo sed -i "s/listen 80 default_server;/$configuration/" /etc/nginx/sites-enabled/default
 
