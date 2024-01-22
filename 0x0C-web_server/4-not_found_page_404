@@ -9,6 +9,9 @@ sudo ufw allow 'Nginx HTTP'
 sudo chown -R "$USER":"$USER" /var/www/html
 sudo chmod -R 755 /var/www
 
+# code for error page and redirect error 404
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
 configuration="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 sudo sed -i "s/listen 80 default_server;/$configuration/" /etc/nginx/sites-enabled/default
 
@@ -19,7 +22,6 @@ echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
 sudo sed -i '24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
 
 # Create a default 404 HTML page
-echo "Ceci n'est pas une page" >> /var/www/html/404.html
 sudo sed -i '25i\	error_page 404 /404.html;' /etc/nginx/sites-available/default
 
 # Restart Nginx service to apply changes
