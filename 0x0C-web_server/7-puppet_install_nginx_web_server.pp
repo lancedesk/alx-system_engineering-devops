@@ -1,7 +1,7 @@
 $default_file = 'https://raw.githubusercontent.com/lancedesk/alx-system_engineering-devops/master/0x0C-web_server/default'
 $default_file_location = '/etc/nginx/sites-available/default'
 
-# Run apt-get update
+# Ensure package information is up-to-date
 exec { 'apt-update':
   command => '/usr/bin/apt-get update',
 }
