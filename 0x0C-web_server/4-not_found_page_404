@@ -1,26 +1,46 @@
 #!/usr/bin/env bash
 # Nginx server config to have a custom 404 page.
 
-# Define the redirection location data
-redirect_location_data="\\\tlocation /redirect_me {\n\t\t return 301 https://google.com;\n\t}\n"
-not_found_location_data="error_page 404 /custom_404.html;\n\\tlocation = /custom_404.html {\n\t\t root /usr/share/nginx/html;\n\t\tinternal;\n\t}\n"
-pattern="#error_page 404 /404.html;"
-
 # Update package list and install Nginx
-sudo apt-get -y update
+sudo apt-get update
 sudo apt-get -y install nginx
-sudo service nginx start
+ufw allow 'Nginx HTTP'
+chmod -R 755 /var/www
 
-# Create a default HTML page
-default_page="/usr/share/nginx/html/index.html"
-echo "Hello World!" | sudo tee "$default_page"
 
-sudo sed -i "30i $redirect_location_data" /etc/nginx/sites-available/default
+echo 'Hello World' > /var/www/html/index.html
 
-echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/custom_404.html
+configuration=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+               root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+                try_files \$uri \$uri/ =404;
+        }
+        error_page 404 /404.html;
+        location  /404.html {
+            internal;
+        }
+        
+        if (\$request_filename ~ redirect_me){
+            rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
+        }
+}
+"
+
+# Create a default 404 HTML page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
 
 # Insert the custom 404 location data into the Nginx configuration file
-sudo sed -i "s@$pattern@$not_found_location_data@" /etc/nginx/sites-available/default
+echo "$configuration" > /etc/nginx/sites-available/default
 
 # Restart Nginx service to apply changes
-sudo service nginx restart
+if [ "$(pgrep nginx)" -le 0 ];
+then
+    service nginx start
+else
+    service nginx restart
+fi;
