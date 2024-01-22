@@ -40,7 +40,7 @@ echo "$configuration" > /etc/nginx/sites-available/default
 # Restart Nginx service to apply changes
 if [ "$(pgrep nginx)" -le 0 ];
 then
-    service nginx start
+    sudo service nginx start
 else
-    service nginx restart
+    sudo service nginx restart
 fi;
