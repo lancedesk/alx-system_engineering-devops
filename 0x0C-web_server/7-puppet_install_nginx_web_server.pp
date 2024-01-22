@@ -1,27 +1,29 @@
-# Puppet manifest to install and configure Nginx
+# nginx setup on web server
+
+# Ensure package information is up-to-date
+exec { 'update system':
+    command => '/usr/bin/apt-get update',
+}
 
 # Install Nginx package
 package { 'nginx':
-  ensure => installed,
+	ensure => 'installed',
+	require => Exec['update system']
 }
 
-# Add a line to the Nginx configuration to perform a 301 redirect
-file_line { 'nginx_redirect_line':
-  ensure => 'present',
-  path   => '/etc/nginx/sites-available/default',
-  after  => 'listen 80 default_server;',
-  line   => 'rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;',
-  require => Package['nginx'],
+# Create a default index.html
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
 }
 
-# Create index.html with "Hello World!"
-file { '/var/www/html/index.html':
-  content => 'Hello World!',
+# Create a redirect
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
 }
 
-# Ensure Nginx service is running and enabled
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => [Package['nginx'], File['/etc/nginx/sites-available/default']],
+# Ensure server is running / start server
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
 }
