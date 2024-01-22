@@ -3,18 +3,16 @@
 
 # Update package list and install Nginx
 sudo apt-get -y update
-sudo apt-get install -y nginx
+sudo apt-get -y install nginx
+
+sudo ufw allow 'Nginx HTTP'
 
 # Create a default HTML page
 default_page="/var/www/html/index.html"
 echo "Hello World!" | sudo tee "$default_page"
 
-# YouTube link
-youtube_link="https://www.youtube.com/watch?v=QH2-TGUlwu4"
-
 # Use double quotes for variable expansion in sed
-sudo sed -i "/listen 80 default_server;/a rewrite ^/redirect_me $youtube_link permanent;" /etc/nginx/sites-available/default
+sed -i "37i\rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default
 
 # Start Nginx service
-sudo service nginx restart
-
+sudo service nginx start
