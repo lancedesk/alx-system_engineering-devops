@@ -2,25 +2,19 @@
 # Nginx server config to redirect /redirect_me to another page.
 
 # Update package list and install Nginx
-sudo apt-get update
-sudo apt-get -y install nginx
-
-# Set file permissions for the web server directories
-sudo chown -R "$USER":"$USER" /var/www/html/
-sudo chown -R "$USER":"$USER" /etc/nginx/sites-available/
+sudo apt-get -y update
+sudo apt-get install -y nginx
 
 # Create a default HTML page
-echo 'Hello World!' > /var/www/html/index.html
+default_page="/var/www/html/index.html"
+echo "Hello World!" | sudo tee "$default_page"
 
-# Define the redirection location data
-redirect="\\\trewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;"
+# YouTube link
+youtube_link="https://www.youtube.com/watch?v=QH2-TGUlwu4"
 
-# Insert the redirection location data into the Nginx configuration file
-sudo sed -i "26i $redirect" /etc/nginx/sites-available/default
+# Use double quotes for variable expansion in sed
+sudo sed -i "/listen 80 default_server;/a rewrite ^/redirect_me $youtube_link permanent;" /etc/nginx/sites-available/default
 
-# Start or Reload Nginx service
-if [[ $(pgrep nginx) ]]; then
-    sudo nginx -s reload
-else
-    sudo service nginx start
-fi
+# Start Nginx service
+sudo service nginx restart
+
