@@ -13,16 +13,13 @@ echo "Hello World!" | sudo tee "$default_page"
 nginx_config="/etc/nginx/sites-available/default"
 
 # Find the line number of the first 'location' directive in the default Nginx configuration
-location_line=$(grep -Fn "location" "$nginx_config" | head -1 | cut -d":" -f1)
-
-# Define the YouTube link for the redirection
-youtube_link="https://youtu.be/mlUOUncSaTk"
+location_line=$(grep -Fn location $nginx_config | head -1 | cut -d":" -f1)
 
 # Define the redirection location data
-redirect_location_data="\\location /redirect_me {\n\\t\\treturn 301 $youtube_link;\n\\t}\n\n"
+redirect_location_data="\\\tlocation /redirect_me {\n\t\treturn 301 https://youtu.be/mlUOUncSaTk;\n\t}\n\n"
 
 # Insert the redirection location data into the Nginx configuration file
-sudo sed -i "${location_line}i ${redirect_location_data}" "$nginx_config"
+sudo sed -i "${location_line}i ${redirect_location_data}" ${nginx_config}
 
 # Start Nginx service
 sudo service nginx start
