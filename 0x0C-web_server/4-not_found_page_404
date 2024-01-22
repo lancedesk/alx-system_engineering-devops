@@ -6,9 +6,7 @@ sudo apt-get update
 sudo apt-get -y install nginx
 ufw allow 'Nginx HTTP'
 chmod -R 755 /var/www
-
 echo 'Hello World' > /var/www/html/index.html
-
 configuration=\
 "server {
         listen 80 default_server;
@@ -23,19 +21,15 @@ configuration=\
         location  /404.html {
             internal;
         }
-        
         if (\$request_filename ~ redirect_me){
             rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
         }
 }
 "
-
 # Create a default 404 HTML page
 echo "Ceci n'est pas une page" > /var/www/html/404.html
-
 # Insert the custom 404 location data into the Nginx configuration file
 echo "$configuration" > /etc/nginx/sites-available/default
-
 # Restart Nginx service to apply changes
 if [ "$(pgrep nginx)" -le 0 ];
 then
