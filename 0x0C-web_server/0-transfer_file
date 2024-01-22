@@ -1,21 +1,23 @@
-#!/bin/bash
-# Use scp to transfer specified file to the user's home directory on the server
-# -o StrictHostKeyChecking=no disables strict host key checking for scp command
-# -i specifies the SSH private key to use for authentication
-# "$username@$server_ip":~/ specifies the destination path on the server
-
-# Check if the number of parameters is less than 4
-if [ "$#" -lt 4 ]; then
-  echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
-  exit 1
-fi
+#!/usr/bin/env bash
+# Transfer a file to a remote server using SCP with optional SSH key.
 
 # Assign parameters to variables for better readability
-file_path=$1
-server_ip=$2
-username=$3
-ssh_key=$4
+file_path="$1";
+server_ip="$2";
+username="$3";
+ssh_key="$4";
+error_message="Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY";
 host_key_rule="StrictHostKeyChecking=no"
 
-# Use scp to transfer specified file to the user's home directory on the server
-scp -o "$host_key_rule" -i "$ssh_key" "$file_path" "$username@$server_ip":~/ 
+# Check if the number of parameters is less than 4
+if [ "$#" -lt 3 ]; then
+	echo -e "$error_message";
+	exit 1;
+fi
+
+if [ "$#" -eq 3 ]; then
+	scp -o "$host_key_rule" "$file_path" "${username}@${server_ip}:~/"
+	exit 0;
+fi
+
+scp -o "$host_key_rule" -i "$ssh_key" "$file_path" "${username}@${server_ip}:~/";
