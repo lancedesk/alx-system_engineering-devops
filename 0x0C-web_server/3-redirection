@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Nginx server config to redirect /redirect_me to another page.
+
+# Update package list and install Nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+
+# Create a default HTML page
+default_page="/var/www/html/index.html"
+echo "Hello World!" | sudo tee "$default_page"
+
+# Nginx configuration file
+nginx_config="/etc/nginx/sites-available/default"
+
+# Find the line number of the first 'location' directive in the default Nginx configuration
+location_line=$(grep -Fn "location" "$nginx_config" | head -1 | cut -d":" -f1)
+
+# Define the YouTube link for the redirection
+youtube_link="https://youtu.be/mlUOUncSaTk"
+# Define the redirection location data
+redirect_location_data="\\tlocation /redirect_me {\n\\t\\treturn 301 $youtube_link;\n\\t}\n\n"
+
+# Insert the redirection location data into the Nginx configuration file
+sudo sed -i "${location_line}i ${redirect_location_data}" "$nginx_config"
+
+# Start Nginx service
+sudo service nginx start
