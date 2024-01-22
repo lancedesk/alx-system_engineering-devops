@@ -1,4 +1,4 @@
-# nginx setup on web server
+# Puppet manifest to install and configure Nginx on web server
 
 # Ensure package information is up-to-date
 exec { 'update system':
