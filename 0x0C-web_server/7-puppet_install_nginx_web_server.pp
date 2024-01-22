@@ -1,42 +1,27 @@
-$default_file = 'https://raw.githubusercontent.com/lancedesk/alx-system_engineering-devops/master/0x0C-web_server/default'
-$default_file_location = '/etc/nginx/sites-available/default'
-
-# Ensure package information is up-to-date
-exec { 'apt-update':
-  command => '/usr/bin/apt-get update',
-}
+# Puppet manifest to install and configure Nginx
 
 # Install Nginx package
 package { 'nginx':
-  ensure  => installed,
-  require => Exec['apt-update'],
+  ensure => installed,
 }
 
-# Create a default index.html
-file { 'Create index.html':
+# Add a line to the Nginx configuration to perform a 301 redirect
+file_line { 'nginx_redirect_line':
+  ensure => 'present',
+  path   => '/etc/nginx/sites-available/default',
+  after  => 'listen 80 default_server;',
+  line   => 'rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;',
   require => Package['nginx'],
-  path    => '/var/www/html/index.html',
-  content => 'Hello World!\n',
 }
 
-# Create a default 404 error page
-file { 'Create 404.html':
-  require => Package['nginx'],
-  path    => '/var/www/html/404.html',
-  content => 'Ceci n\'est pas une page\n',
-}
-
-# Configure Nginx main configuration file and restart Nginx
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  require => Package['nginx'],
-  notify  => Service['nginx'],
-  content => file($default_file),
+# Create index.html with "Hello World!"
+file { '/var/www/html/index.html':
+  content => 'Hello World!',
 }
 
 # Ensure Nginx service is running and enabled
 service { 'nginx':
   ensure  => running,
   enable  => true,
-  require => File['/etc/nginx/sites-available/default'],
+  require => [Package['nginx'], File['/etc/nginx/sites-available/default']],
 }
