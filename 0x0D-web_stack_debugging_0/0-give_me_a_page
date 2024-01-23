@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Starts the Apache service within a Docker environment.
+# Uses the 'service' command to initiate the Apache2 service.
+service apache2 start
