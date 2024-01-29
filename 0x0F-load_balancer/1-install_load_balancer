@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Install and configure HAProxy
+
+# Update package list and install HAProxy
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+sudo service haproxy start
+
+# HAProxy configuration
+lb1="listen lb"               # Define the HAProxy listener
+lb2="bind 0.0.0.0:80"         # Bind HAProxy to listen on port 80 for all interfaces
+lb3="mode http"               # Set the mode to HTTP
+lb4="balance roundrobin"      # Use round-robin load balancing algorithm
+lb5="option httpclose"        # Close HTTP connection after the response
+lb6="option forwardfor"       # Forward original client IP address in HTTP headers
+lb7="server 477078-web-01 54.90.14.221:80 check"    # Define server 1 with IP address and check health
+lb8="server 477078-web-02 204.236.240.155:80 check"  # Define server 2 with IP address and check health
+haproxy_default_location="/etc/default/haproxy"
+haproxy_config_file="/etc/haproxy/haproxy.cfg"
+s="\n\t"; e="\n";             # Formatting for configuration lines
+load_balancer_config="${lb1}${s}${lb2}${s}${lb3}${s}${lb4}${s}${lb5}${s}${lb6}${s}${lb7}${s}${lb8}${e}"
+
+# Enable HAProxy to be managed via init script
+sudo sed -i "\$a ENABLED=1" "${haproxy_default_location}"
+
+# Append load balancer configuration to HAProxy configuration file
+sudo sed -i "\$a ${load_balancer_config}" "${haproxy_config_file}"
+
+# Restart HAProxy service to apply changes
+sudo service haproxy restart
