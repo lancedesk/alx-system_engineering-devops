@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# A script that will display information about subdomains.
+
+# Function to display information about a subdomain
+display_subdomain_info() {
+    domain="$1"
+    subdomain="$2"
+
+    # If subdomain is not provided, set default subdomains
+    if [ -z "$subdomain" ]; then
+        subdomains=("www" "lb-01" "web-01" "web-02")
+    else
+        subdomains=("$subdomain")
+    fi
+
+    # Loop through each subdomain and display its information
+    for sub in "${subdomains[@]}"; do
+        # Perform DNS lookup and extract relevant information
+        result=$(dig $sub.$domain | awk '/^;; ANSWER SECTION:$/,/^$/' | grep -v ';')
+        record_type=$(echo "$result" | awk '{print $4}')
+        destination=$(echo "$result" | awk '{print $5}')
+
+        # Display information about the subdomain
+        echo "The subdomain $sub is a $record_type record and points to $destination"
+    done
+}
+
+# Check if the required arguments are provided
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
+
+# Extract domain and subdomain arguments
+domain="$1"
+subdomain="$2"
+
+# Call function to display subdomain information
+display_subdomain_info "$domain" "$subdomain"
