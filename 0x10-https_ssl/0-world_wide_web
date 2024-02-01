@@ -3,37 +3,15 @@
 
 # Function to display information about a subdomain
 display_subdomain_info() {
-    domain="$1"
-    subdomain="$2"
-
-    # If subdomain is not provided, set default subdomains
-    if [ -z "$subdomain" ]; then
-        subdomains=("www" "lb-01" "web-01" "web-02")
-    else
-        subdomains=("$subdomain")
-    fi
-
-    # Loop through each subdomain and display its information
-    for sub in "${subdomains[@]}"; do
-        # Perform DNS lookup and extract relevant information
-        result=$(dig $sub.$domain | awk '/^;; ANSWER SECTION:$/,/^$/' | grep -v ';')
-        record_type=$(echo "$result" | awk '{print $4}')
-        destination=$(echo "$result" | awk '{print $5}')
-
-        # Display information about the subdomain
-        echo "The subdomain $sub is a $record_type record and points to $destination"
-    done
+    result=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+    echo "$2 $result" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Check if the required arguments are provided
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 <domain> [subdomain]"
-    exit 1
+if [ "$#" == 1 ]; then
+    display_subdomain_info "$1" "www"
+    display_subdomain_info "$1" "lb-01"
+    display_subdomain_info "$1" "web-01"
+    display_subdomain_info "$1" "web-02"
+elif [ "$#" == 2 ]; then
+    display_subdomain_info "$1" "$2"
 fi
-
-# Extract domain and subdomain arguments
-domain="$1"
-subdomain="$2"
-
-# Call function to display subdomain information
-display_subdomain_info "$domain" "$subdomain"
