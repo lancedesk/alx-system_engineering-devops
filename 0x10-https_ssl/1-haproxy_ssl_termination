@@ -32,15 +32,11 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-
-backend lancedesk.tech-backend
+listen lb
+        bind 0.0.0.0:80
+        bind :443 ssl crt /etc/haproxy/certs/cert.pem
         balance roundrobin
+        option httpclose
+        option forwardfor
         server 477078-web-01 54.90.14.221:80 check
         server 477078-web-02 204.236.240.155:80 check
-
-frontend lancedesk.tech-frontend
-        bind *:80
-	    bind *:443 crt /etc/letsencrypt/live/www.lancedesk.tech/fullchain.pem
-        redirect scheme https if !{ ssl_fc }
-        mode http
-        default_backend lancedesk.tech-backend
