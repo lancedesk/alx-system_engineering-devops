@@ -32,11 +32,14 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-listen lb
-        bind 0.0.0.0:80
-        bind :443 ssl crt /etc/haproxy/certs/cert.pem
-        balance roundrobin
-        option httpclose
-        option forwardfor
-        server 477078-web-01 54.90.14.221:80 check
-        server 477078-web-02 204.236.240.155:80 check
+		
+frontend www
+    bind *:80
+    bind :443 ssl crt /etc/haproxy/certs/cert.pem
+    http-request redirect scheme https unless { ssl_fc }
+    default_backend servers
+
+backend servers
+    balance roundrobin
+    server 477078-web-01 54.90.14.221:80 check
+    server 477078-web-02 204.236.240.155:80 check
