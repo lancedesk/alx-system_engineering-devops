@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# A xix to the container so that Nginx is running as the nginx user.
+
+# Replace the user directive in nginx.conf from www-data to nginx
+sudo sed -i 's/#user www-data/user nginx/' /etc/nginx/nginx.conf
+
+# Set permissions for nginx.conf to 700
+chmod 700 /etc/nginx/nginx.conf
+
+# Change ownership of nginx.conf to nginx user and group
+chown nginx:nginx /etc/nginx/nginx.conf
+
+# Modify the default server port from 80 to 8080 in the default site configuration
+sudo sed -i 's/80 default_server/8080 default_server/' /etc/nginx/sites-available/default
+
+# Stop Apache2 service if it's running
+pkill apache2
+
+# Restart Nginx service to apply the changes with nginx user
+sudo -u nginx service nginx restart
