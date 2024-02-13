@@ -15,6 +15,3 @@ sudo mysqldump -u root -p"$1" --all-databases > "$MYSQL_DUMP_FILE"
 
 # Create the compressed archive
 tar -czf "$ARCHIVE_NAME" "$MYSQL_DUMP_FILE"
-
-# Clean up the MySQL dump file
-rm "$MYSQL_DUMP_FILE"
