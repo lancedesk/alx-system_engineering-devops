@@ -52,8 +52,9 @@ def export_to_csv():
                      ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        writer.writeheader()
-
+        """
+        Write each todo item as a row in the CSV file
+        """
         for todo in todos.json():
             writer.writerow({
                 'USER_ID': user_id,
