@@ -2,6 +2,7 @@
 """
 Returns information about given employee ID TODO list progress
 Using this REST API
+And exports data in CSV format
 """
 
 import csv
@@ -18,52 +19,34 @@ def export_to_csv():
     Fetching user information
     """
     users = requests.get("http://jsonplaceholder.typicode.com/users")
-    user_id = int(argv[1])
-
-    """
-    Find the user by ID
-    """
     for user in users.json():
-        if user.get('id') == user_id:
-            employee_name = user.get('username')
+        if user.get('id') == int(argv[1]):
+            username = (user.get('username'))
             break
 
     """
     Fetching user's TODO list
     """
-    todos = requests.get(
-            f"http://jsonplaceholder.typicode.com/todos?userId={user_id}"
-            )
-
-    """
-    File name based on user ID
-    """
-    file_name = f"{user_id}.csv"
+    task_status = []
+    todos = requests.get("http://jsonplaceholder.typicode.com/todos")
+    for todo in todos.json():
+        if todo.get('userId') == int(argv[1]):
+            task_status.append((todo.get('completed'),
+                                todo.get('title')))
 
     """
     Writing data to CSV file
     """
-    with open(file_name, 'w', newline='') as csvfile:
-        fieldnames = [
-                      'USER_ID',
-                      'USERNAME',
-                      'TASK_COMPLETED_STATUS',
-                      'TASK_TITLE'
-                     ]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        """
-        Write each todo item as a row in the CSV file
-        """
-        for todo in todos.json():
-            writer.writerow({
-                'USER_ID': user_id,
-                'USERNAME': employee_name,
-                'TASK_COMPLETED_STATUS': todo.get('completed'),
-                'TASK_TITLE': todo.get('title')
-            })
-
-    print(f"Data exported to {file_name}")
+    filename = "{}.csv".format(argv[1])
+    with open(filename, "w") as csvfile:
+        fieldnames = ["user_id", "username",
+                      "task_status", "task_title"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames,
+                                quoting=csv.QUOTE_ALL)
+        for task in task_status:
+            writer.writerow({"user_id": argv[1], "username": username,
+                             "task_status": task[0],
+                             "task_title": task[1]})
 
 
 if __name__ == "__main__":
