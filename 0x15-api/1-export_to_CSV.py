@@ -4,8 +4,8 @@ Returns information about given employee ID TODO list progress
 Using this REST API
 """
 
-import requests
 import csv
+import requests
 from sys import argv
 
 
