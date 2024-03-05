@@ -4,9 +4,10 @@ Recursively queries the Reddit API, parses the titles of all hot articles,
 and prints a sorted count of given keywords.
 """
 from requests import get
+from sys import argv
 
 
-def count_words(subreddit, word_list, after=None, counter=None):
+def count_words(subreddit, word_list, after="", counter={}, t=0):
     """
     Parameters:
         subreddit (str): The subreddit to query.
@@ -17,57 +18,29 @@ def count_words(subreddit, word_list, after=None, counter=None):
     Returns:
         None
     """
-    if counter is None:
-        counter = {}
+    if t == 0:
+        for word in word_list:
+            counter[word] = 0
 
-    if after is None:
-        headers = {"User-Agent": "Custom"}
-        url = "https://api.reddit.com/r/{}/hot".format(subreddit)
-    else:
-        headers = {"User-Agent": "Custom", "after": after}
-        reddit_url = "https://api.reddit.com/r/{}/hot?after={}"
-        url = reddit_url.format(subreddit, after)
-
-    response = get(url, headers=headers)
-    if response.status_code != 200:
-        print("An error occurred while querying the Reddit API.")
-        return
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    json = get("https://api.reddit.com/r/{}/hot?after={}".
+               format(subreddit, after), headers=headers).json()
 
     try:
-        data = response.json()['data']
-        after = data['after']
-        children = data['children']
+        key = json['data']['after']
+        data = json['data']['children']
+        for obj in data:
+            for word in counter:
+                counter[word] += obj['data']['title'].lower().split(
+                    ' ').count(word.lower())
 
-        # Count the occurrences of each word in the titles
-        for child in children:
-            title = child['data']['title'].lower()
-            for word in word_list:
-                if word.lower() in title.split():
-                    counter[word.lower()] = counter.get(word.lower(), 0) + 1
+        if key is not None:
+            count_words(subreddit, word_list, key, counter, 1)
 
-        if after is not None:
-            count_words(subreddit, word_list, after, counter)
         else:
-            # Sort counter dictionary by count (descending) & word (ascending)
-            sorted_cntr = sorted(counter.items(), key=lambda x: (-x[1], x[0]))
-
-            # Print the results
-            for word, count in sorted_cntr:
-                print("{}: {}".format(word, count))
-
-    except KeyError:
-        print("No data available for the given subreddit.")
-        return
-
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) < 3:
-        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
-        print("Ex: {} programming 'python java javascript'"
-              .format(sys.argv[0]))
-    else:
-        subreddit = sys.argv[1]
-        keywords = sys.argv[2].split()
-        count_words(subreddit, keywords)
+            posts = sorted(counter.items(), key=lambda i: i[1], reverse=True)
+            for key, value in posts:
+                if value != 0:
+                    print('{}: {}'.format(key, value))
+    except Exception:
+        return None
