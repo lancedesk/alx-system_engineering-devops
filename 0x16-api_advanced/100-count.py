@@ -1,47 +1,73 @@
 #!/usr/bin/python3
 """
-    Recursively queries the Reddit API, parses the titles of all hot articles,
-    and prints a sorted count of given keywords.
+Recursively queries the Reddit API, parses the titles of all hot articles,
+and prints a sorted count of given keywords.
 """
-import requests
+from requests import get
 
 
-def count_words(subreddit, word_list, after=None, counts={}):
+def count_words(subreddit, word_list, after=None, counter=None):
     """
     Parameters:
         subreddit (str): The subreddit to query.
         word_list (list): A list of keywords to count.
-        after (str): The Reddit post ID to start the query from.
-        counts (dict): A dictionary to store the count of each keyword.
+        after (str): A token for pagination in Reddit API.
+        counter (dict): A dictionary to count keywords.
 
     Returns:
         None
     """
+    if counter is None:
+        counter = {}
+
     if after is None:
-        url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+        headers = {"User-Agent": "Custom"}
+        url = "https://api.reddit.com/r/{}/hot".format(subreddit)
     else:
-        url = f"https://www.reddit.com/r/{subreddit}/hot.json?after={after}"
+        headers = {"User-Agent": "Custom", "after": after}
+        reddit_url = "https://api.reddit.com/r/{}/hot?after={}"
+        url = reddit_url.format(subreddit, after)
 
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-
-    response = requests.get(url, headers=headers)
+    response = get(url, headers=headers)
     if response.status_code != 200:
-        print(None)
+        print("An error occurred while querying the Reddit API.")
         return
 
-    data = response.json().get('data', {})
-    after = data.get('after', None)
-    children = data.get('children', [])
+    try:
+        data = response.json()['data']
+        after = data['after']
+        children = data['children']
 
-    for child in children:
-        title = child.get('data', {}).get('title', '').lower()
-        for word in word_list:
-            if title.count(word.lower()) > 0:
-                counts[word] = counts.get(word, 0) + title.count(word.lower())
+        # Count the occurrences of each word in the titles
+        for child in children:
+            title = child['data']['title'].lower()
+            for word in word_list:
+                if word.lower() in title.split():
+                    counter[word.lower()] = counter.get(word.lower(), 0) + 1
 
-    if after is not None:
-        count_words(subreddit, word_list, after, counts)
+        if after is not None:
+            count_words(subreddit, word_list, after, counter)
+        else:
+            # Sort counter dictionary by count (descending) & word (ascending)
+            sorted_cntr = sorted(counter.items(), key=lambda x: (-x[1], x[0]))
+
+            # Print the results
+            for word, count in sorted_cntr:
+                print("{}: {}".format(word, count))
+
+    except KeyError:
+        print("No data available for the given subreddit.")
+        return
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) < 3:
+        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
+        print("Ex: {} programming 'python java javascript'"
+              .format(sys.argv[0]))
     else:
-        sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))
-        for word, count in sorted_counts:
-            print(f"{word}: {count}")
+        subreddit = sys.argv[1]
+        keywords = sys.argv[2].split()
+        count_words(subreddit, keywords)
