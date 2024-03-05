@@ -14,14 +14,14 @@ def top_ten(subreddit):
     Returns:
         None
     """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        data = response.json()
-        posts = data['data']['children']
-        for post in posts:
-            print(post['data']['title'])
+    payload = {"limit": "10"}
+    response = requests.get(url, headers=headers, params=payload,
+                            allow_redirects=False)
+    if response.status_code != 200:
+        print("None")
     else:
-        print(None)
+        hot_topics = response.json().get("data").get("children")
+        titles = [post.get("data").get("title") for post in hot_topics]
+        print(*titles, sep='\n')
