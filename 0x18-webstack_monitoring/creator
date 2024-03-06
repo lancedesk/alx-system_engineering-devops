@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Create access file
+cat <<EOF > access
+#!/usr/bin/env bash
+# Uses SSH to connect to a server
+# using a private key located at ~/.ssh/id_rsa
+# for the ubuntu user
+ssh -i ~/.ssh/id_rsa ubuntu@52.91.120.189
+EOF
+chmod +x access
+
+# Create access_1 file
+cat <<EOF > access_1
+#!/usr/bin/env bash
+# Uses SSH to connect to a server
+# using a private key located at ~/.ssh/id_rsa
+# for the ubuntu user
+ssh -i ~/.ssh/id_rsa ubuntu@54.237.108.117
+EOF
+chmod +x access_1
+
+# Create access_2 file
+cat <<EOF > access_2
+#!/usr/bin/env bash
+# Uses SSH to connect to a server
+# using a private key located at ~/.ssh/id_rsa
+# for the ubuntu user
+ssh -i ~/.ssh/id_rsa ubuntu@34.229.161.185
+EOF
+chmod +x access_2
+
+echo "Files created successfully."
