@@ -2,6 +2,12 @@
 [Postmortem - Web Stack Outage Incident.jpg](https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/Postmortem%20-%20Web%20Stack%20Outage%20Incident.jpg?raw=true)
 
 ![Postmortem - Web Stack Outage Incident]([[https://github.com/username/repository/blob/main/image.png](https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/Postmortem%20-%20Web%20Stack%20Outage%20Incident.jpg)])
+
+
+![GitHub Logo](https://github.com/username/repository/blob/main/image.png](https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/postmortem-web-stack-outage-incident.jpg)
+
+https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/postmortem-web-stack-outage-incident.jpg
+
 <h2>Issue Summary:</h2>
 
 <ul>
