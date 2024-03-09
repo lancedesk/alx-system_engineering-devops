@@ -8,6 +8,10 @@
 
 https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/postmortem-web-stack-outage-incident.jpg
 
+
+
+![Postmortem - Web Stack Outage Incident](https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/postmortem-web-stack-outage-incident.jpg?raw=true)
+
 <h2>Issue Summary:</h2>
 
 <ul>
