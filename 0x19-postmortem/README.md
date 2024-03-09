@@ -1,5 +1,5 @@
 <h1>Postmortem: Web Stack Outage Incident</h1>
-
+[Postmortem - Web Stack Outage Incident.jpg](https://github.com/lancedesk/alx-system_engineering-devops/blob/master/0x19-postmortem/Postmortem%20-%20Web%20Stack%20Outage%20Incident.jpg?raw=true)
 <h2>Issue Summary:</h2>
 
 <ul>
