@@ -1,18 +1,3 @@
 #!/usr/bin/env bash
-# Reload Gunicorn gracefully without downtime.
-
-# Get Gunicorn process IDs and send SIGHUP signal for graceful reload
-reload_gunicorn() 
-{
-    # Get Gunicorn process IDs and send SIGHUP signal
-    pgrep_gunicorn | xargs kill -HUP 
-}
-
-# Get the process IDs of Gunicorn.
-pgrep_gunicorn() 
-{
-    pgrep gunicorn 
-}
-
-# Reload Gunicorn
-reload_gunicorn
+#A Bash script to reload Gunicorn in a graceful way.
+kill -s HUP "$(pgrep gunicorn)"
